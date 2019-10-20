@@ -1,0 +1,19 @@
+{
+  "name": "hitch-lil-helper",
+  "version": "3.0.0",
+  "description": "just simple folder collector",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "crocodeev",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^6.0.12"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "fs-extra": "^8.1.0",
+    "ncp": "^2.0.0"
+  }
+}
