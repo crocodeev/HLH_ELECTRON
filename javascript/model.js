@@ -13,7 +13,7 @@ let model = {
     //path arrays
     arr:[],
     // чтение директорий и сохранение оных в массив, разобраться как это сделать с помощью колбэков
-    getFolders: function listDirectories(dir, callback) {
+    getFolders: function listDirectories(dir, callback, callback2) {
     fs.readdir(dir, (err, fileNames) => {
         if (err) return callback(err);
         if (!fileNames.length) return callback(null, []);
@@ -28,6 +28,7 @@ let model = {
                 if (err) return callback(err);
                 if (stats.isDirectory()) {
                     subDirs.push(file);
+                    callback2(file);
                     listDirectories(file, (err, subSubDirs) => {
                         if (err) return callback(err);
                         subDirs.push(...subSubDirs);

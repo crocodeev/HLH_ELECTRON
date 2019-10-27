@@ -65,8 +65,28 @@ if(!paths.length){
 
 spinnerShow();
 
+let counter = 0;
 
-  for (let i = 0; i < paths.length; i++) {
+(function initDirectoryTree(){
+  let path = paths[counter];
+  //let key = "arr" + i;
+  logic.model.getFolders(path, (err, dirs) => {
+if (err) {
+    process.exitCode = 1;
+    spinnerHide();
+    alertShow(err);
+} else {
+    Array.prototype.push.apply(logic.model.arr, dirs);
+    spinnerHide();
+}
+}, spinnerInfo);
+  counter++;
+  if (counter <  paths.length){
+    setTimeout(initDirectoryTree,0);
+  }
+})();
+
+  /*for (let i = 0; i < paths.length; i++) {
       let path = paths[i];
       let key = "arr" + i;
       logic.model.getFolders(path, (err, dirs) => {
@@ -79,7 +99,7 @@ spinnerShow();
         spinnerHide();
     }
 });
-    }
+}*/
   })
 
 //hadler GO button
@@ -157,13 +177,14 @@ function spinnerHide() {
   document.getElementById('md').classList.remove("show");
 }
 
-function spinnerShow(path) {
+function spinnerShow() {
   let spinner = document.getElementById('md');
   spinner.classList.add("show");
 }
 
-function functionName() {
-
+function spinnerInfo(path) {
+  let spinnerInfo = document.getElementById('spinnerInfo')
+  spinnerInfo.innerText = path;
 }
 
 //alert Utils
