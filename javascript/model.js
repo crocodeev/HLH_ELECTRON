@@ -66,5 +66,3 @@ let model = {
 }
 
 module.exports.model = model;
-
-//добавить progress bar

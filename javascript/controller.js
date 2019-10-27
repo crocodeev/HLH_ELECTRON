@@ -1,5 +1,6 @@
 'use strict'
 
+const utils = require('./javascript/utils');
 const logic = require('./javascript/model');
 const {dialog} = require('electron').remote;
 const remote = require('electron').remote;
@@ -29,9 +30,21 @@ for (var i = 0; i < 4; i++) {
 }
 
 function getPath(target){
+  let value = target.value;
+
   let dialogPathOption = {properties: ['openFile','openDirectory']};
+
   dialog.showOpenDialog(dialogPathOption, function(filename) {
-  target.value = filename[0];
+
+    console.log(filename[0]);
+  if(utils.isPathFilled(filename[0])) {
+    target.value = filename[0];
+  } else if(value !== ""){
+    return;
+  }else{
+    alertShow("Your didn't choose any folder!");
+  }
+
   });
 }
 
@@ -43,18 +56,24 @@ init.addEventListener("click", () => {
 
 let textInputs = document.getElementsByClassName('form-control');
 
+let paths = utils.onlyFilledForms(textInputs);
+
+if(!paths.length){
+  alertShow("You must choose at least one folder!");
+  return;
+}
+
 spinnerShow();
 
 
-
-  for (let i = 0; i < 3; i++) {
-      let path = textInputs[i].value;
+  for (let i = 0; i < paths.length; i++) {
+      let path = paths[i];
       let key = "arr" + i;
       logic.model.getFolders(path, (err, dirs) => {
     if (err) {
         process.exitCode = 1;
-        console.error(err);
         spinnerHide();
+        alertShow(err);
     } else {
         Array.prototype.push.apply(logic.model.arr, dirs);
         spinnerHide();
@@ -68,32 +87,45 @@ spinnerShow();
 let go = document.getElementById('go');
 
 go.addEventListener("click", ()=>{
+
+if( !utils.isArrayFilled(logic.model.arr)){
+  alertShow("Initialize directories tree first!");
+  return;
+}
+
 let targetFolders = getTargetFolders();
 let destinationFolder = getDestinationFolder();
+
   progressValue(0);
   progressShow();
 
   let counter = 0;
 
-
-
   (function doTask() {
-    let targetPath = logic.model.find(targetFolders[counter]);
+
+    let folderToFind = targetFolders[counter];
+    let targetPath = logic.model.find(folderToFind);
+
     if (targetPath === undefined) {
+
       counter++;
       let percent = Math.round(counter*100/targetFolders.length);
       progressValue(percent);
-      logic.model.logger(destinationFolder, "Folder not found");
+      logic.model.logger(destinationFolder, "Folder not found" + targetFolders[counter]);
+
       if (percent < 100){
         setTimeout(doTask, 0)
       }else{
         progressHide();
       }
+
     }else{
+
       logic.model.copy(targetPath,destinationFolder);
       counter++;
       let percent = Math.round(counter*100/targetFolders.length);
       progressValue(percent);
+
       if (percent < 100){
         setTimeout(doTask, 0)
       }else{
@@ -127,10 +159,29 @@ function spinnerHide() {
 
 function spinnerShow(path) {
   let spinner = document.getElementById('md');
-  let spinnerTitle = document.getElementById('mdtitle');
-  spinnerTitle.value = "Scanning " + path;
   spinner.classList.add("show");
 }
+
+function functionName() {
+
+}
+
+//alert Utils
+
+function alertShow(message) {
+  let alert = document.getElementById("mdal");
+  let alertText = document.getElementById('alert-text');
+  let closeBtn = document.getElementById("alcl");
+  closeBtn.addEventListener("click", ()=>{
+    alert.classList.remove("show");
+  });
+  alertText.innerText = message;
+  alert.classList.add("show");
+}
+
+//info utils
+
+
 
 //progressbar
 
