@@ -13,7 +13,7 @@ let model = {
     //path arrays
     arr:[],
     // чтение директорий и сохранение оных в массив, разобраться как это сделать с помощью колбэков
-    getFolders: function listDirectories(dir, callback, callback2) {
+    getFolders: function listDirectories(dir, callback) {
     fs.readdir(dir, (err, fileNames) => {
         if (err) return callback(err);
         if (!fileNames.length) return callback(null, []);
@@ -28,10 +28,11 @@ let model = {
                 if (err) return callback(err);
                 if (stats.isDirectory()) {
                     subDirs.push(file);
-                    callback2(file);
                     listDirectories(file, (err, subSubDirs) => {
                         if (err) return callback(err);
                         subDirs.push(...subSubDirs);
+                        let spinnerInfo = document.getElementById('spinnerInfo'); // разобраться с этим callback'ом ибо порнография!!!
+                        spinnerInfo.innerText = file;
                         if (!--remaining) {
                             // We've gathered the sub dirs of this sub dir and this was the last file to check, all done.
                             callback(null, subDirs);

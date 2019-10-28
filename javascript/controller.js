@@ -36,7 +36,6 @@ function getPath(target){
 
   dialog.showOpenDialog(dialogPathOption, function(filename) {
 
-    console.log(filename[0]);
   if(utils.isPathFilled(filename[0])) {
     target.value = filename[0];
   } else if(value !== ""){
@@ -79,7 +78,7 @@ if (err) {
     Array.prototype.push.apply(logic.model.arr, dirs);
     spinnerHide();
 }
-}, spinnerInfo);
+});
   counter++;
   if (counter <  paths.length){
     setTimeout(initDirectoryTree,0);
