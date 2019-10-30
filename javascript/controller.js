@@ -130,7 +130,7 @@ let destinationFolder = getDestinationFolder();
       counter++;
       let percent = Math.round(counter*100/targetFolders.length);
       progressValue(percent);
-      logic.model.logger(destinationFolder, "Folder not found" + targetFolders[counter]);
+      logic.model.logger(destinationFolder, "Folder not found " + targetFolders[counter]);
 
       if (percent < 100){
         setTimeout(doTask, 0)

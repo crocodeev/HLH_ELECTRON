@@ -53,7 +53,7 @@ let model = {
     },
     find: function (targetFolder) {
         for (let i = 0; i < this.arr.length; i++) {
-          if(this.arr[i].includes(targetFolder)){
+          if(this.arr[i].toLowerCase().includes(targetFolder.toLowerCase())){
             return this.arr[i];
           }
         }
