@@ -53,9 +53,16 @@ let model = {
     },
     find: function (targetFolder) {
         for (let i = 0; i < this.arr.length; i++) {
-          if(this.arr[i].toLowerCase().includes(targetFolder.toLowerCase())){
+          //old search logic
+          /*if(this.arr[i].toLowerCase().includes(targetFolder.toLowerCase())){
+            return this.arr[i];
+          }*/
+          //new search logic
+          let endOfPath = path.basename(this.arr[i]);
+          if (endOfPath.toLowerCase() === targetFolder.toLowerCase()) {
             return this.arr[i];
           }
+
         }
         console.log("Not found " + targetFolder);
     },
