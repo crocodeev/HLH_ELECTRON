@@ -6,16 +6,6 @@ const {dialog} = require('electron').remote;
 const remote = require('electron').remote;
 
 
-
-//test purpose
-
-function pause(ms){
-var date = new Date();
-var curDate = null;
-do { curDate = new Date(); }
-while(curDate-date < ms);
-}
-
 //new progress bar
 
 
@@ -52,6 +42,8 @@ function getPath(target){
 let init = document.getElementById('init');
 
 init.addEventListener("click", () => {
+
+logic.model.arr = [];
 
 let textInputs = document.getElementsByClassName('form-control');
 
@@ -113,12 +105,24 @@ if( !utils.isArrayFilled(logic.model.arr)){
 }
 
 let targetFolders = getTargetFolders();
+
+if (utils.isEmptyString(targetFolders[0])) {
+  alertShow("You did't fill WHAT field!");
+  return;
+}
+
 let destinationFolder = getDestinationFolder();
+
+if (utils.isEmptyString(destinationFolder)) {
+  alertShow("You did't fill WHERE field!");
+  return;
+}
 
   progressValue(0);
   progressShow();
 
   let counter = 0;
+  let counterNotFind = 0;
 
   (function doTask() {
 
@@ -128,14 +132,18 @@ let destinationFolder = getDestinationFolder();
     if (targetPath === undefined) {
 
       counter++;
+      counterNotFind ++;
       let percent = Math.round(counter*100/targetFolders.length);
-      progressValue(percent);
-      logic.model.logger(destinationFolder, "Folder not found " + targetFolders[counter]);
+      progressValue(percent, "...");
+      logic.model.logger(destinationFolder, "Folder not found " + folderToFind);
 
       if (percent < 100){
         setTimeout(doTask, 0)
       }else{
         progressHide();
+        if (counterNotFind > 0) {
+          alertShow(counterNotFind + "file(s) didn't find, see more info in log");
+        }
       }
 
     }else{
@@ -143,12 +151,15 @@ let destinationFolder = getDestinationFolder();
       logic.model.copy(targetPath,destinationFolder);
       counter++;
       let percent = Math.round(counter*100/targetFolders.length);
-      progressValue(percent);
+      progressValue(percent, targetPath);
 
       if (percent < 100){
         setTimeout(doTask, 0)
       }else{
         progressHide();
+        if (counterNotFind > 0) {
+          alertShow(counterNotFind + "file(s) didn't find, see more info in log");
+        }
       }
     }
   })();
@@ -213,8 +224,10 @@ function progressShow() {
   document.getElementById('mdpg').classList.add("show");
 }
 
-function progressValue(value) {
+function progressValue(value, message) {
   let pg = document.getElementById("pg");
+  let pgInfo = document.getElementById("progressInfo");
   pg.setAttribute("style", `width: ${value}%`);
   pg.innerText = `${value}%`;
+  pgInfo.innerText = message;
 }

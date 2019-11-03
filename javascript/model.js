@@ -57,7 +57,7 @@ let model = {
             return this.arr[i];
           }
         }
-        console.log("Not found" + targetFolder);
+        console.log("Not found " + targetFolder);
     },
     logger: function (destination, message) {
       fs.appendFile(path.join(destination, "log.txt"), message + "\n", (err) => {

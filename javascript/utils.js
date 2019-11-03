@@ -22,3 +22,9 @@ exports.isArrayFilled = function (arr) {
   arr.length > 0 ? result = true : result = false;
   return result;
 }
+
+exports.isEmptyString = function (string) {
+  let result;
+  string === "" ? result = true : result = false;
+  return result;
+}
