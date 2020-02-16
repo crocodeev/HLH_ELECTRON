@@ -9,7 +9,9 @@ const fs = require('fs-extra');
 
 
 let model = {
-
+    notFound:[],
+    //task queue
+    taskArr:[],
     //path arrays
     arr:[],
     // чтение директорий и сохранение оных в массив, разобраться как это сделать с помощью колбэков
